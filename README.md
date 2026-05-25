@@ -1,0 +1,1 @@
+An image viewer project to learn SDL3 and CPP.
