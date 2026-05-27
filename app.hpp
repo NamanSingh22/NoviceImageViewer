@@ -7,6 +7,7 @@
 #include <string_view>
 #include <SDL3/SDL.h>
 #include "viewport.hpp"
+#include <string>
 
 class App
 {
@@ -26,6 +27,8 @@ private:
     SDL_Window *m_window = nullptr;
     SDL_Renderer *m_renderer = nullptr;
     SDL_Texture *m_texture = nullptr;
+
+    std::string m_current_file_path = "";
 
     bool m_is_running = false;
 

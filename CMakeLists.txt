@@ -25,5 +25,6 @@ target_link_libraries(IMAGEVIEWER PRIVATE
 add_custom_command(TARGET IMAGEVIEWER POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_CURRENT_SOURCE_DIR}/bin/SDL3.dll"
+        "${CMAKE_CURRENT_SOURCE_DIR}/image.jpg"
     $<TARGET_FILE_DIR:IMAGEVIEWER>    
 )

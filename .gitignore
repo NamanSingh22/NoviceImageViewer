@@ -8,9 +8,7 @@
 *.exe
 *.dll
 
-/#.clang-format
-
 /image.jpg
 
-!/lib/x64/SDL3.lib
-!/bin/SDL3.dll
+/include
+/lib

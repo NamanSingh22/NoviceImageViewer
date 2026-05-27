@@ -32,4 +32,23 @@ struct Viewport
         out_x = ((win_w - out_w) / 2.0f) + pan_x;
         out_y = ((win_h - out_h) / 2.0f) + pan_y;
     }
+
+    void adjust_zoom(float mouse_x, float mouse_y, float zoom_delta, float win_w, float win_h, float img_w, float img_h)
+    {
+        float old_zoom = zoom;
+
+        zoom += zoom_delta * 0.1f * zoom;
+        if (zoom < 0.1f)
+            zoom = 0.1f;
+        if (zoom > 20.0f)
+            zoom = 20.0f;
+
+        float rel_x = mouse_x - (win_w / 2.0f);
+        float rel_y = mouse_y - (win_h / 2.0f);
+
+        float zoom_ratio = zoom / old_zoom;
+
+        pan_x = rel_x - (rel_x - pan_x) * zoom_ratio;
+        pan_y = rel_y - (rel_y - pan_y) * zoom_ratio;
+    }
 };

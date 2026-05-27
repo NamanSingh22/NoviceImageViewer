@@ -85,6 +85,38 @@ void App::handle_events()
         {
             m_is_running = false;
         }
+
+        else if (event.type == SDL_EVENT_MOUSE_WHEEL)
+        {
+            float mouse_x = 0.0f;
+            float mouse_y = 0.0f;
+            SDL_GetMouseState(&mouse_x, &mouse_y);
+
+            int win_w = 0;
+            int win_h = 0;
+            SDL_GetWindowSize(m_window, &win_w, &win_h);
+
+            m_view.adjust_zoom(mouse_x, mouse_y, event.wheel.y, static_cast<float>(win_w), static_cast<float>(win_h),m_img_w, m_img_h);
+        }
+        else if (event.type == SDL_EVENT_DROP_FILE)
+        {
+            const char *dropped_file_path = event.drop.data;
+
+            if (dropped_file_path)
+            {
+                m_current_file_path = dropped_file_path;
+
+                std::cout << "dropped file path: " << m_current_file_path << "\n";
+                
+                if (load_img(m_current_file_path))
+                {
+                    m_view.pan_x = 0.0f;
+                    m_view.pan_y = 0.0f;
+                    m_view.zoom = 1.0f;
+                }
+
+            }
+        }
     }
 }
 
