@@ -85,7 +85,19 @@ void App::handle_events()
         {
             m_is_running = false;
         }
+        else if (event.type == SDL_EVENT_KEY_DOWN)
+        {
+            if (event.key.key == SDLK_Q)
+            {
+                if (m_texture != nullptr)
+                {
+                    std::cout << "Closing current image and freeing VRAM..\n";
 
+                    SDL_DestroyTexture(m_texture);
+                    m_texture = nullptr;
+                }
+            }
+        }
         else if (event.type == SDL_EVENT_MOUSE_WHEEL)
         {
             float mouse_x = 0.0f;
@@ -96,7 +108,7 @@ void App::handle_events()
             int win_h = 0;
             SDL_GetWindowSize(m_window, &win_w, &win_h);
 
-            m_view.adjust_zoom(mouse_x, mouse_y, event.wheel.y, static_cast<float>(win_w), static_cast<float>(win_h),m_img_w, m_img_h);
+            m_view.adjust_zoom(mouse_x, mouse_y, event.wheel.y, static_cast<float>(win_w), static_cast<float>(win_h), m_img_w, m_img_h);
         }
         else if (event.type == SDL_EVENT_DROP_FILE)
         {
@@ -104,17 +116,13 @@ void App::handle_events()
 
             if (dropped_file_path)
             {
-                m_current_file_path = dropped_file_path;
-
-                std::cout << "dropped file path: " << m_current_file_path << "\n";
-                
-                if (load_img(m_current_file_path))
+                std::cout << "dropped file path: " << dropped_file_path << "\n";
+                if (load_img(dropped_file_path))
                 {
                     m_view.pan_x = 0.0f;
                     m_view.pan_y = 0.0f;
                     m_view.zoom = 1.0f;
                 }
-
             }
         }
     }
@@ -122,19 +130,23 @@ void App::handle_events()
 
 void App::render()
 {
-    int win_w = 0;
-    int win_h = 0;
-    SDL_GetWindowSize(m_window, &win_w, &win_h);
-
-    SDL_FRect dest_rect;
-    m_view.calculate_dest_rect(m_img_w, m_img_h, static_cast<float>(win_w), static_cast<float>(win_h), dest_rect.x, dest_rect.y, dest_rect.w, dest_rect.h);
 
     SDL_SetRenderDrawColor(m_renderer, 25, 25, 25, 255);
     SDL_RenderClear(m_renderer);
 
+    int win_w = 0;
+    int win_h = 0;
+    SDL_GetWindowSize(m_window, &win_w, &win_h);
+
     if (m_texture)
     {
+        SDL_FRect dest_rect;
+        m_view.calculate_dest_rect(m_img_w, m_img_h, static_cast<float>(win_w), static_cast<float>(win_h), dest_rect.x, dest_rect.y, dest_rect.w, dest_rect.h);
         SDL_RenderTexture(m_renderer, m_texture, nullptr, &dest_rect);
+    }
+    else
+    {
+        render_default_splash_screen(static_cast<float>(win_w), static_cast<float>(win_h));
     }
 
     SDL_RenderPresent(m_renderer);
@@ -158,4 +170,27 @@ void App::cleanup()
         m_window = nullptr;
     }
     SDL_Quit();
+}
+
+void App::render_default_splash_screen(float win_w, float win_h)
+{
+    float box_w = win_w / 2.0f;
+    float box_h = win_h / 2.0f;
+
+    SDL_FRect drop_zone;
+    drop_zone.x = (win_w - box_w) / 2.0f;
+    drop_zone.y = (win_h - box_h) / 2.0f;
+    drop_zone.w = box_w;
+    drop_zone.h = box_h;
+
+    SDL_SetRenderDrawColor(m_renderer, 60, 60, 65, 255);
+    SDL_RenderRect(m_renderer, &drop_zone);
+
+    float center_x = win_w / 2.0f;
+    float center_y = win_h / 2.0f;
+    float line_len = 16.0f;
+
+    SDL_SetRenderDrawColor(m_renderer, 100, 100, 105, 255);
+    SDL_RenderLine(m_renderer, center_x - line_len, center_y, center_x + line_len, center_y);
+    SDL_RenderLine(m_renderer, center_x, center_y - line_len, center_x, center_y + line_len);
 }

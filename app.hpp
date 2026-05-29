@@ -23,12 +23,11 @@ private:
     void handle_events();
     void render();
     void cleanup();
+    void render_default_splash_screen(float win_w, float win_h);
 
     SDL_Window *m_window = nullptr;
     SDL_Renderer *m_renderer = nullptr;
     SDL_Texture *m_texture = nullptr;
-
-    std::string m_current_file_path = "";
 
     bool m_is_running = false;
 

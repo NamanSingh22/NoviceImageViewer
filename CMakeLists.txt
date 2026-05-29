@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.20)
 
 project(IMAGEVIEWER LANGUAGES C CXX)
 
+# if(MSVC)
+#     add_compile_options(/fsanitize=address)
+#     add_link_options(/inferasanlibs)
+# endif()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -25,6 +30,6 @@ target_link_libraries(IMAGEVIEWER PRIVATE
 add_custom_command(TARGET IMAGEVIEWER POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_CURRENT_SOURCE_DIR}/bin/SDL3.dll"
-        "${CMAKE_CURRENT_SOURCE_DIR}/image.jpg"
+    # "${CMAKE_CURRENT_SOURCE_DIR}/image.jpg"
     $<TARGET_FILE_DIR:IMAGEVIEWER>    
 )
